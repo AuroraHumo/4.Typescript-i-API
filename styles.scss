@@ -1,2 +1,35 @@
 
+$primary: rgb(202, 216, 200);
+$secondary: #b06ddd;
+
 @import './node_modules/bootstrap/scss/bootstrap.scss';
+
+body {
+    background-image: url('./img/dad.jpg'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    flex-direction: column; 
+}
+
+main {
+    width: 50%;
+    min-height: 50vh;
+    border-color: #ffffff;
+    box-shadow: 0 0 5px rgba(247, 244, 244, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center; 
+    margin: auto;
+}
+
+h2 {
+        color: $primary;
+    }
+
+h3 {
+    font-family: fantasy;
+}
