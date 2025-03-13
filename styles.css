@@ -11989,6 +11989,7 @@ main {
 
 h2, .h2 {
   color: rgb(202, 216, 200);
+  font-family: "Courier New", bold;
 }
 
 h3, .h3 {
