@@ -37,15 +37,20 @@ async function generarBroma() {
 function report(rate: string, acuditActual: string) {
     
     let date = new Date().toISOString()
-    
-    let report = {
-        'joke': acuditActual,
-        'score': parseInt(rate),        
-        'date': date
+    let score = parseInt(rate)
+
+    let found = reportAcudits.find((item) => {
+        return item.joke === acuditActual;
+    });
+
+    if (found) {
+        found.score = score;
+    } else {
+        reportAcudits.push({
+            'joke': acuditActual,
+            'score': score,        
+            'date': date
+        })
     }
-    /* if(reportAcudits[reportAcudits.length - 1] === ){
-        reportAcudits.pop()
-    } */
-    reportAcudits.push(report)
     console.log(reportAcudits)
 }
