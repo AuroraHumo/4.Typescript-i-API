@@ -11987,6 +11987,15 @@ main {
   margin: auto;
 }
 
+footer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+}
+
 p {
   color: rgb(202, 216, 200);
   font-family: "Courier New", bold;

@@ -15,8 +15,13 @@ let report2 = document.getElementById('report2');
 let report3 = document.getElementById('report3');
 let acuditActual;
 let reportAcudits = [];
+let summary = document.getElementById("summary");
+let temperature = document.getElementById("temperature");
+let wind = document.getElementById("wind");
+let cloud_cover = document.getElementById("cloud_cover");
 button.addEventListener('click', generarBroma);
 window.addEventListener('DOMContentLoaded', generarBroma);
+window.addEventListener('DOMContentLoaded', getWeather);
 report1.addEventListener('click', function () {
     report('1', acuditActual);
 });
@@ -26,6 +31,30 @@ report2.addEventListener('click', function () {
 report3.addEventListener('click', function () {
     report('3', acuditActual);
 });
+const url = 'https://www.meteosource.com/api/v1/free/point?lat=41.38879&lon=2.15899&sections=current&timezone=auto&language=en&units=metric&key=e1pppqt2rqwmkh0usnqcj7rj9d9zy1mt6xy40uob';
+function getWeather() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const resposta = yield fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            if (!resposta.ok) {
+                throw new Error(`Error: ${resposta.status}`);
+            }
+            const dades = yield resposta.json();
+            summary.innerText = dades.current.summary;
+            temperature.innerText = `${dades.current.temperature}°C`;
+            wind.innerText = `🌬️ ${dades.current.wind.speed} km/h (${dades.current.wind.dir})`;
+            cloud_cover.innerText = `☁️ Cloudyness: ${dades.current.cloud_cover}%`;
+        }
+        catch (error) {
+            console.error("No s'ha pogut obtenir la informació:", error);
+        }
+    });
+}
 function generarBroma() {
     return __awaiter(this, void 0, void 0, function* () {
         try {

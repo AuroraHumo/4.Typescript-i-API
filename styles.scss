@@ -26,6 +26,16 @@ main {
     margin: auto;
 }
 
+footer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    align-items: center 
+    
+}
+
 p {
         color: $primary;
         font-family:'Courier New', bold;
