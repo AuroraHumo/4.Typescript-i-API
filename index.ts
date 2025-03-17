@@ -7,7 +7,6 @@ let report3 = document.getElementById('report3') as HTMLButtonElement;
 let acuditActual: string;
 let reportAcudits: { joke: string; score: number; date: string; }[] = []
 
-//let summary = document.getElementById("summary") as HTMLElement;
 let temperature = document.getElementById("temperature") as HTMLElement;
 let wind = document.getElementById("wind") as HTMLElement;
 let cloud_cover = document.getElementById("cloud_cover") as HTMLElement;
@@ -29,30 +28,6 @@ report3.addEventListener('click', function() {
 
 const url = 'https://www.meteosource.com/api/v1/free/point?lat=41.38879&lon=2.15899&sections=current&timezone=auto&language=en&units=metric&key=e1pppqt2rqwmkh0usnqcj7rj9d9zy1mt6xy40uob';
 
-/* async function getWeather() {
-    try {
-        const resposta = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
-        });
-
-        if (!resposta.ok) {
-            throw new Error(`Error: ${resposta.status}`);
-        }
-
-        const dades = await resposta.json();
-
-        summary.innerText = dades.current.summary;
-        temperature.innerText = `${dades.current.temperature}°C`;
-        wind.innerText = ` 🌬️ ${dades.current.wind.speed} km/h (${dades.current.wind.dir})`;
-        cloud_cover.innerText = ` ☁️ Cloudyness: ${dades.current.cloud_cover}%`;
-
-    } catch (error) {
-        console.error("No s'ha pogut obtenir la informació del temps:", error);
-    }
-} */
     async function getWeather() {
         try {
             const resposta = await fetch(url, {
@@ -64,7 +39,6 @@ const url = 'https://www.meteosource.com/api/v1/free/point?lat=41.38879&lon=2.15
     
             const dades = await resposta.json();
     
-            //summary.innerText = dades.current.summary;
             temperature.innerText = ` BCN: ${dades.current.temperature}°C `;
             wind.innerText = `-  ${dades.current.wind.speed} km/h (${dades.current.wind.dir}) `;
             cloud_cover.innerText = `-  Cloudyness: ${dades.current.cloud_cover}%`;
