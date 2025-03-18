@@ -34,8 +34,16 @@ const url = 'https://www.meteosource.com/api/v1/free/point?lat=41.38879&lon=2.15
                 method: 'GET',
                 headers: { 'Accept': 'application/json' }
             });
-    
-            if (!resposta.ok) throw new Error(`Error: ${resposta.status}`);
+            
+            if (!resposta.ok) {
+                if (resposta.status === 404) {
+                    throw new Error('⚠️ Weather data not found (404)');
+                } else if (resposta.status === 500) {
+                    throw new Error('⚠️ Weather API server error (500)');
+                } else {
+                    throw new Error(`⚠️ Unexpected error: ${resposta.status}`);
+                }
+            }
     
             const dades = await resposta.json();
     
@@ -43,6 +51,9 @@ const url = 'https://www.meteosource.com/api/v1/free/point?lat=41.38879&lon=2.15
             wind.innerText = `-  ${dades.current.wind.speed} km/h (${dades.current.wind.dir}) `;
             cloud_cover.innerText = `-  Cloudyness: ${dades.current.cloud_cover}%`;
         } catch (error) {
+            temperature.innerText = "❌ Weather unavailable";
+            wind.innerText = "";
+            cloud_cover.innerText = "";
             console.error("No s'ha pogut obtenir la informació:", error);
         }
     }
@@ -68,23 +79,31 @@ async function generarBroma() {
         const resposta = await fetch(apiURL, { headers });
 
         if (!resposta.ok) {
-            throw new Error(`Something went wrong: ${resposta.status}`);
+            if (resposta.status === 404) {
+                throw new Error('⚠️ Joke not found (404)');
+            } else if (resposta.status === 500) {
+                throw new Error('⚠️ Server error (500)');
+            } else {
+                throw new Error(`⚠️ Unexpected error: ${resposta.status}`);
+            }
         }
 
         const json = await resposta.json();
         
         let joke = '';
-        if (apiURL.includes('icanhazdadjoke')) {
+        if (apiURL.includes('icanhazdadjoke') && json.joke) {
             joke = json.joke;
-        } else if (apiURL.includes('api-ninjas.com')) {
+        } else if (apiURL.includes('api-ninjas.com') && json[0].joke && json[0].joke.length > 0) {
             joke = json[0].joke;
+        } else {
+            throw new Error("⚠️ Invalid joke format received from API");
         }
 
         resultDiv.innerHTML = joke;
         acuditActual = joke;
 
     } catch (error) {
-        resultDiv.innerHTML = 'Error. Dad is not joking today...';
+        resultDiv.innerHTML = '❌ Error fetching joke. Try again!';
         console.error(error);
     }
 }
