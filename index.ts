@@ -11,7 +11,7 @@ let temperature = document.getElementById("temperature") as HTMLElement;
 let wind = document.getElementById("wind") as HTMLElement;
 let cloud_cover = document.getElementById("cloud_cover") as HTMLElement;
 
-const API_NINJAS_KEY = 'ZD0Du+VPhzXbg3gWaAGo6A==bz9YNUdjll0ezWkZ';
+const API_NINJAS_KEY = 'ZD0Du+VPhzXbg3gWaAGo6A==bz9YNUdjll0ezWkZ'; 
 
 button.addEventListener('click', generarBroma)
 window.addEventListener('DOMContentLoaded', () => {
@@ -43,18 +43,29 @@ const url = 'https://www.meteosource.com/api/v1/free/point?lat=41.38879&lon=2.15
                 } else {
                     throw new Error(`⚠️ Unexpected error: ${resposta.status}`);
                 }
-            }
-    
+            } 
             const dades = await resposta.json();
+
+            const resultat = {
+                temperature: dades.current.temperature,
+                windSpeed: dades.current.wind.speed,
+                windDir: dades.current.wind.dir,
+                cloudCover: dades.current.cloud_cover
+            };
     
             temperature.innerText = ` BCN: ${dades.current.temperature}°C `;
             wind.innerText = `-  ${dades.current.wind.speed} km/h (${dades.current.wind.dir}) `;
             cloud_cover.innerText = `-  Cloudyness: ${dades.current.cloud_cover}%`;
+
+            return resultat;
+
         } catch (error) {
+
             temperature.innerText = "❌ Weather unavailable";
             wind.innerText = "";
             cloud_cover.innerText = "";
-            console.error("No s'ha pogut obtenir la informació:", error);
+
+            return { error: error instanceof Error ? error.message : String(error) }
         }
     }
 
@@ -102,9 +113,12 @@ async function generarBroma() {
         resultDiv.innerHTML = joke;
         acuditActual = joke;
 
+        return joke;
+
     } catch (error) {
         resultDiv.innerHTML = '❌ Error fetching joke. Try again!';
         console.error(error);
+        return error;
     }
 }
 
@@ -125,5 +139,6 @@ function report(rate: number, acuditActual: string) {
             'date': date
         })
     }
-    console.log(reportAcudits)
+
+    return reportAcudits;
 }
