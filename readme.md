@@ -21,7 +21,7 @@
 
 * **HTML5**
 * **CSS** + **Bootstrap** + **Bootstrap Icons**
-* **JavaScript** + **TypeScript**
+* **TypeScript**
 * **External APIs**
 
 ## **Requirements**

@@ -4,57 +4,68 @@ let report1 = document.getElementById('report1') as HTMLButtonElement;
 let report2 = document.getElementById('report2') as HTMLButtonElement;        
 let report3 = document.getElementById('report3') as HTMLButtonElement;
 
-let acuditActual: string;
-let reportAcudits: { joke: string; score: number; date: string; }[] = []
+let actualJoke: string;
+let reportJokes: { joke: string; score: number; date: string; }[] = []
 
 let temperature = document.getElementById("temperature") as HTMLElement;
 let wind = document.getElementById("wind") as HTMLElement;
 let cloud_cover = document.getElementById("cloud_cover") as HTMLElement;
 
-const API_NINJAS_KEY = 'ZD0Du+VPhzXbg3gWaAGo6A==bz9YNUdjll0ezWkZ';
+const API_NINJAS_KEY = 'ZD0Du+VPhzXbg3gWaAGo6A==bz9YNUdjll0ezWkZ'; 
 
-button.addEventListener('click', generarBroma)
+button.addEventListener('click', jokeGenerator)
 window.addEventListener('DOMContentLoaded', () => {
-    generarBroma();
+    jokeGenerator();
     getWeather();
 });
 
 report1.addEventListener('click', function() {
-    report(1, acuditActual)});
+    report(1, actualJoke)});
 report2.addEventListener('click', function() {
-    report(2, acuditActual)});
+    report(2, actualJoke)});
 report3.addEventListener('click', function() {
-    report(3, acuditActual)});
+    report(3, actualJoke)});
 
 const url = 'https://www.meteosource.com/api/v1/free/point?lat=41.38879&lon=2.15899&sections=current&timezone=auto&language=en&units=metric&key=e1pppqt2rqwmkh0usnqcj7rj9d9zy1mt6xy40uob';
 
     async function getWeather() {
         try {
-            const resposta = await fetch(url, {
+            const answer = await fetch(url, {
                 method: 'GET',
                 headers: { 'Accept': 'application/json' }
             });
             
-            if (!resposta.ok) {
-                if (resposta.status === 404) {
+            if (!answer.ok) {
+                if (answer.status === 404) {
                     throw new Error('⚠️ Weather data not found (404)');
-                } else if (resposta.status === 500) {
+                } else if (answer.status === 500) {
                     throw new Error('⚠️ Weather API server error (500)');
                 } else {
-                    throw new Error(`⚠️ Unexpected error: ${resposta.status}`);
+                    throw new Error(`⚠️ Unexpected error: ${answer.status}`);
                 }
-            }
-    
-            const dades = await resposta.json();
+            } 
+            const dades = await answer.json();
+
+            const resultat = {
+                temperature: dades.current.temperature,
+                windSpeed: dades.current.wind.speed,
+                windDir: dades.current.wind.dir,
+                cloudCover: dades.current.cloud_cover
+            };
     
             temperature.innerText = ` BCN: ${dades.current.temperature}°C `;
             wind.innerText = `-  ${dades.current.wind.speed} km/h (${dades.current.wind.dir}) `;
             cloud_cover.innerText = `-  Cloudyness: ${dades.current.cloud_cover}%`;
+
+            return resultat;
+
         } catch (error) {
+
             temperature.innerText = "❌ Weather unavailable";
             wind.innerText = "";
             cloud_cover.innerText = "";
-            console.error("No s'ha pogut obtenir la informació:", error);
+
+            return { error: error instanceof Error ? error.message : String(error) }
         }
     }
 
@@ -67,7 +78,7 @@ function getRandomJokeAPI(): string {
     return apis[Math.floor(Math.random() * apis.length)];
 }
 
-async function generarBroma() {
+async function jokeGenerator() {
     try {
         const apiURL = getRandomJokeAPI();
         const headers: HeadersInit = { 'Accept': 'application/json' };
@@ -76,19 +87,19 @@ async function generarBroma() {
             headers['X-Api-Key'] = API_NINJAS_KEY;
         }
 
-        const resposta = await fetch(apiURL, { headers });
+        const answer = await fetch(apiURL, { headers });
 
-        if (!resposta.ok) {
-            if (resposta.status === 404) {
+        if (!answer.ok) {
+            if (answer.status === 404) {
                 throw new Error('⚠️ Joke not found (404)');
-            } else if (resposta.status === 500) {
+            } else if (answer.status === 500) {
                 throw new Error('⚠️ Server error (500)');
             } else {
-                throw new Error(`⚠️ Unexpected error: ${resposta.status}`);
+                throw new Error(`⚠️ Unexpected error: ${answer.status}`);
             }
         }
 
-        const json = await resposta.json();
+        const json = await answer.json();
         
         let joke = '';
         if (apiURL.includes('icanhazdadjoke') && json.joke) {
@@ -100,30 +111,34 @@ async function generarBroma() {
         }
 
         resultDiv.innerHTML = joke;
-        acuditActual = joke;
+        actualJoke = joke;
+
+        return joke;
 
     } catch (error) {
         resultDiv.innerHTML = '❌ Error fetching joke. Try again!';
         console.error(error);
+        return error;
     }
 }
 
-function report(rate: number, acuditActual: string) {
+function report(rate: number, actualJoke: string) {
     
     let date = new Date().toISOString()
 
-    let found = reportAcudits.find((item) => {
-        return item.joke === acuditActual;
+    let found = reportJokes.find((item) => {
+        return item.joke === actualJoke;
     });
 
     if (found) {
         found.score = rate;
     } else {
-        reportAcudits.push({
-            'joke': acuditActual,
+        reportJokes.push({
+            'joke': actualJoke,
             'score': rate,        
             'date': date
         })
     }
-    console.log(reportAcudits)
+
+    return reportJokes;
 }
